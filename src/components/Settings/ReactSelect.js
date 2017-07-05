@@ -3,6 +3,8 @@ import t from 'tcomb-form';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
+import s from './styles';
+
 class ReactSelect extends t.form.Select {
   getTemplate() {
     return locals => {
@@ -19,7 +21,7 @@ class ReactSelect extends t.form.Select {
           <label className="control-label">
             {locals.label}
           </label>
-          <Select
+          <s.MultiSelect
             multi
             simpleValue
             name={locals.attrs.name}
