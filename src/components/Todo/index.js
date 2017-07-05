@@ -1,0 +1,72 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import Todolist from './Todolist';
+import AddTodo from './AddTodo';
+import { markTodo, onTodoSubmit, onDelete } from '../../actions';
+
+class Todo extends Component {
+  render() {
+    const { todos } = this.props;
+    const players = this.props.players.players;
+
+    const playerIdArr = [];
+    players.map(player => playerIdArr.push(player.id));
+
+    const player1Todo = [];
+    const player2Todo = [];
+
+    todos.map(todo => {
+      if (todo.playerId === playerIdArr[0]) {
+        player1Todo.push(todo);
+      } else {
+        player2Todo.push(todo);
+      }
+    });
+
+    const player1TodoHtml = player1Todo.map(todo =>
+      <Todolist key={todo.id} todo={todo} onClick={this.props.markTodo} onDelete={this.props.onDelete} />,
+    );
+    const player2TodoHtml = player2Todo.map(todo =>
+      <Todolist key={todo.id} todo={todo} onClick={this.props.markTodo} onDelete={this.props.onDelete} />,
+    );
+
+    return (
+      <div>
+        <h3>Todo Page</h3>
+        <div>
+          <p>
+            {players[0].name}
+          </p>
+          <AddTodo player={players[0].id} onTodoSubmit={this.props.onTodoSubmit} />
+          {player1TodoHtml}
+        </div>
+        <div>
+          <p>
+            {players[1].name}
+          </p>
+          <AddTodo player={players[1].id} onTodoSubmit={this.props.onTodoSubmit} />
+          {player2TodoHtml}
+        </div>
+      </div>
+    );
+  }
+}
+
+Todo.PropTypes = {
+  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
+  players: PropTypes.shape({
+    players: PropTypes.arrayOf(PropTypes.object).isRequired,
+  }).isRequired,
+  markTodo: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onTodoSubmit: PropTypes.func.isRequired,
+};
+
+const selected = state => ({
+  todos: state.todo,
+  players: state.settings,
+});
+
+export default connect(selected, { markTodo, onTodoSubmit, onDelete })(Todo);
